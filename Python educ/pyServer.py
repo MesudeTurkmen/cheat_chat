@@ -8,7 +8,7 @@ import time
 """HOST = "192.168.1.38" """                            #const, ipconfig in cmd
 #SERVER = "194.27.19.117"
 HEADER = 64                                             #const, 64bytes 
-PORT = 8080                                             #const
+PORT = 6666                                          #const
 SERVER = socket.gethostbyname(socket.gethostname())     #finds the ipv4 address automaticlly
 ADDR = (SERVER, PORT)                                   #Tuple for binding the server
 FORMAT = 'utf-8'                                        #encoding format
