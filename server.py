@@ -7,7 +7,6 @@ import os
 with open("predefinedCredentials.txt","r") as file:
     valid_credentials = json.load(file)
 
-
 SERVER = socket.gethostbyname(socket.gethostname())     #Get machine's ip address
 PORT = 6666                                             
 LIMIT = 1                                               #Server Limit's default value set to 1
@@ -27,8 +26,9 @@ def admin_logIn():
     #Admin's menu
     while True:
         while True:
+            clear()
             choice = input("1) Set Server Limit\n2) Run Server\n\nYour choice: ")
-                
+    
             #Check if the choice is within expected values
             if choice in ['1', '2']:
                 break  # Exit the loop if the input is valid
@@ -67,7 +67,6 @@ def listen_for_messages(client, username):
             final_msg = username + '~ ' + message
             send_messages_to_all(final_msg)
             CHAT_HISTORY.append(final_msg)
-
         else:
             print(f"The message send from client {username} is empty")
 
@@ -82,7 +81,6 @@ def godfry_authenticate(username, password):
     return response
 
 def client_handler(client):
-
     # Server will listen for client messages here
     # Getting the authentication credentials
     credentials = client.recv(64).decode(FORMAT)
@@ -96,17 +94,7 @@ def client_handler(client):
     prompt_message = "SERVER~" + f"{username} added to the chat"
     send_messages_to_all(prompt_message)        # Announcing the new commers
     send_message_to_client(client, response)    # Delivering The Approval Message
-    """
-    while True:
-        username = client.recv(2048).decode('utf-8')
-        if username != '':
-            ACTIVE_CLIENTS.append((username, client))
-            prompt_message = "SERVER~" + f"{username} added to the chat"
-            send_messages_to_all(prompt_message)
-            break
-        else:
-            print("Client username is empty")
-    """
+    ACTIVE_CLIENTS.append(username)
     threading.Thread(target=listen_for_messages, args=(client, username, )).start()
 
 def main():
@@ -116,22 +104,20 @@ def main():
 
     try:    #ERROR Handling
         server.bind(ADDR)
-        print(f"[ONLINE!] The Server Is Running On {SERVER} {PORT}")
-
+        server.listen(LIMIT)    #Setting limit to the server for admin only
+        print(f"[ONLINE!] The Server Is Running")
     except:
         print(f"[ERROR!] Unable To Bind To {SERVER} {PORT}")
-
-    server.listen(LIMIT)    #Setting limit to the server for admin only
+    clear()
     admin_logIn()
-    server.listen(LIMIT)    #Resetting server's limit
-    print(f"[SERVER] The Server Is Listening On {SERVER} {PORT}\nMax Limit Is Set To {LIMIT}")
+    server.listen(LIMIT)        #Resetting server's limit
+    input(f"[SERVER] The Server Is Online On {SERVER} {PORT}\nMax Limit Is Set To {LIMIT}\nPress ENTER To Start Listening.")
 
     while True:
+        print("Listening...")
         client, address = server.accept()
         print(f"[CONNECTED] Successfully connected to client {address[0]} {address[1]}")
-
-        threading.Thread(target=client_handler, args=(client,)).start() #New thread to handle the new client
-
+        threading.Thread(target=client_handler, args=(client,)).start()     #New thread to handle the new client
 
 if __name__ == '__main__':
     main()          #Calling the main function
