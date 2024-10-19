@@ -9,12 +9,11 @@ with open("predefinedCredentials.txt","r") as file:
 
 SERVER = socket.gethostbyname(socket.gethostname())     #Get machine's ip address
 PORT = 6666                                             
-LIMIT = 0                                               #Server Limit's default value set to 1
+LIMIT = 1                                               #Server Limit's default value set to 1
 ADDR = (SERVER, PORT)                                   #Tuple for binding the server
 FORMAT = 'utf-8'                                        #Encryption format
 DISCONNECT_MESSAGE = "!DISCONNECT"
-ACTIVE_SESSIONS = []                                    #Connected clients' list
-ACTIVE_USERS = []                                     #Connected users' list of usernames
+ACTIVE_CLIENTS = []                                     #Connected users' list
 CHAT_HISTORY = []                                       #Chat Log (list). To be saved to a txt later.
 
 def clear():    # Clears the terminal
@@ -52,13 +51,13 @@ def admin_logIn():
 
 # Sending Message To Given Client
 def send_message_to_client(client, message):
-    client.sendall(message.encode(FORMAT))
+    client.sendall(message.encode())
 
 # Function to send any new message to all the clients that
 # are currently connected to this server
 def send_messages_to_all(message):
-    for user in ACTIVE_SESSIONS:
-        send_message_to_client(user, message)
+    for user in ACTIVE_CLIENTS:
+        send_message_to_client(user[1], message)
 
 # Function to listen for upcoming messages from a client
 def listen_for_messages(client, username):
@@ -75,13 +74,13 @@ def godfry_authenticate(username, password):
     # Commparing username and password with predefined credentials dict
     # Checking within currently connected users
     if username in valid_credentials and valid_credentials[username] == password:
-        if username not in ACTIVE_USERS:
+        if username not in ACTIVE_CLIENTS:
             response = "ACCESS_APPROVED!"
     else:
         response = "ACCESS_DENIED!"
     return response
 
-def client_handler(client, address):
+def client_handler(client):
     # Server will listen for client messages here
     # Getting the authentication credentials
     credentials = client.recv(64).decode(FORMAT)
@@ -90,38 +89,35 @@ def client_handler(client, address):
 
     # Authenticating. The session will terminate if the credentials do not match.
     response = godfry_authenticate(username, password)
-    send_message_to_client(client, response)    # Delivering The Approval Message
-    if response == "ACCESS_DENIED!":
-        client.close()
-        print(f"Client {address} with {username} username was kicked off due to invalid Authentication.")
-        return
+    client.close() if response == "ACCESS_DENIED!" else None
 
     prompt_message = "SERVER~" + f"{username} added to the chat"
     send_messages_to_all(prompt_message)        # Announcing the new commers
-    ACTIVE_USERS.append(username)
-    ACTIVE_SESSIONS.append(client)
+    send_message_to_client(client, response)    # Delivering The Approval Message
+    ACTIVE_CLIENTS.append(username)
     threading.Thread(target=listen_for_messages, args=(client, username, )).start()
 
 def main():
     #Socket class object being created
     #AF_INET stands for IPV4, SOCK_STREAM stands for TCP
     server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    admin_logIn()
+
     try:    #ERROR Handling
         server.bind(ADDR)
-        server.listen(LIMIT)    #Setting server's limit
+        server.listen(LIMIT)    #Setting limit to the server for admin only
         print(f"[ONLINE!] The Server Is Running")
     except:
         print(f"[ERROR!] Unable To Bind To {SERVER} {PORT}")
-        
     clear()
+    admin_logIn()
+    server.listen(LIMIT)        #Resetting server's limit
     input(f"[SERVER] The Server Is Online On {SERVER} {PORT}\nMax Limit Is Set To {LIMIT}\nPress ENTER To Start Listening.")
 
     while True:
         print("Listening...")
         client, address = server.accept()
         print(f"[CONNECTED] Successfully connected to client {address[0]} {address[1]}")
-        threading.Thread(target=client_handler, args=(client,address)).start()     #New thread to handle the new client
+        threading.Thread(target=client_handler, args=(client,)).start()     #New thread to handle the new client
 
 if __name__ == '__main__':
     main()          #Calling the main function
