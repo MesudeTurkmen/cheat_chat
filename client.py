@@ -47,7 +47,7 @@ def main():
         if msg == "exit()":
             break
         send(msg, client)
-send(DISCONNECT_MESSAGE)
+    send(DISCONNECT_MESSAGE)
 
 if __name__ == '__main__':
     main()
