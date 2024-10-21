@@ -43,7 +43,7 @@ def display_menu(menu=3):
 #______________________________________________________________________
 
 #Validates user input for menu options
-def get_user_choice(menu):
+def get_user_choice(menu=3):
     while True:
         clear()
         display_menu(menu)
