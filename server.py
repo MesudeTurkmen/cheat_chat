@@ -34,7 +34,7 @@ def clear():
 #______________________________________________________________________
 
 #Displays menu options
-def display_menu(menu):
+def display_menu(menu=3):
     match menu:
         case 'server_config':
             print("1) Set Server Limit")
