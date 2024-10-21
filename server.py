@@ -5,6 +5,8 @@ import json
 import os
 #______________________________________________________________________
 
+menu=3
+
 #Loading Predefined Credentials
 with open("predefined_credentials.txt","r") as file:
     valid_credentials = json.load(file)
