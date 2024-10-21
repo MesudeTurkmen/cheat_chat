@@ -36,12 +36,14 @@ def clear():
 #______________________________________________________________________
 
 #Displays menu options
+'''
 def display_menu(menu=3):
     match menu:
         case 'server_config':
             print("1) Set Server Limit")
             print("2) Change Port")
             print("3) Run Server")
+
 #______________________________________________________________________
 
 #Validates user input for menu options
@@ -55,7 +57,7 @@ def get_user_choice(menu=3):
         print("\nPlease enter a valid number (1-3).")
         input("Press ENTER to continue...")
 #______________________________________________________________________
-
+'''
 #Handles setting the server limit
 def set_server_limit():
     global LIMIT
