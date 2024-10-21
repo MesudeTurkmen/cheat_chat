@@ -11,7 +11,7 @@ with open("predefined_credentials.txt","r") as file:
 #______________________________________________________________________
 
 #Creating Server Configurations 
-SERVER = socket.gethostbyname(socket.gethostname())     #Get machine's IP address
+SERVER =  '0.0.0.0'            #socket.gethostbyname(socket.gethostname())     #Get machine's IP address
 PORT = 6666                                             #Setting port
 LIMIT = 0                                               #Server's limit default set to 0
 FORMAT = 'utf-8'                                        #Encyption format set to utf-8
