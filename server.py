@@ -91,7 +91,7 @@ def set_new_port():
 ## Main configuration loop
 def server_config():
     while True:
-        choice = get_user_choice('server_config')
+        choice = 3   #get_user_choice('server_config')
         match choice:
             case '1':
                 set_server_limit()
