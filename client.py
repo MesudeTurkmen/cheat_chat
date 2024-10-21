@@ -5,7 +5,7 @@ import os
 PORT = 6666
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
-SERVER = ""
+SERVER = "172.31.38.238"
 username = ''
 password = ''
 
