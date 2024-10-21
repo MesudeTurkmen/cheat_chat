@@ -196,7 +196,7 @@ def main():
     #Socket class object being created
     #AF_INET stands for IPV4, SOCK_STREAM stands for TCP
     server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    server_config()
+    #server_config()
 
     try:
         server.bind((SERVER, PORT))
