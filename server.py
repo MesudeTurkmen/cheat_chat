@@ -89,6 +89,8 @@ def set_new_port():
 #Change The Server Configurations
 #Finally Run The Server
 ## Main configuration loop
+
+'''
 def server_config():
     while True:
         choice = 3   #get_user_choice('server_config')
@@ -104,6 +106,7 @@ def server_config():
                 break  # Exit the loop and start the server
             case _:
                 continue
+'''
 #______________________________________________________________________
 
 #Sends the message to the corresponding client_socket object (also encodes)
