@@ -46,7 +46,7 @@ def handle_client(client_socket):
             pass
 """
 
-def listen_for_messages(client_socket, username):
+def listen_for_messages(client_socket):
     while True:
         message = client_socket.recv(2048).decode('utf-8')
         if message != '':
