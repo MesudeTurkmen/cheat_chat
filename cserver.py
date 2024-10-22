@@ -23,10 +23,9 @@ def broadcast(message, sender_socket):
             if client != sender_socket:  # Mesajı gönderen istemciye tekrar gönderme
                 try:
                     client.send(message)
-                except (socket.error, BrokenPipeError, ConnectionResetError) as e:
-                    print(f"Hata: {e}, istemciye mesaj gönderilemiyor.")
-                    # Hata durumunda istemciyi listeden çıkarmayı düşünebilirsin
-                    clients.remove(client)
+                except:
+                    print("unknown error")
+                    pass
 """
 # İstemciden gelen mesajları işleyen fonksiyon
 def handle_client(client_socket):
