@@ -1,7 +1,7 @@
 import socket
 
 # Sunucu IP'sini ve portunu belirleyin
-SERVER_IP = 'sunucunun-aws-ip-adresi'
+SERVER_IP = '63.176.122.3'
 SERVER_PORT = 8080
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
