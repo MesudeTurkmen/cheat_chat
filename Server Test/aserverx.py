@@ -71,10 +71,10 @@ def godfry_authenticate(client_socket, address):
     username = credentials.split(',')[0]
     password = credentials.split(',')[1]
 
-    if not check_valid_credentials(username, password,client_socket):
-        if not is_user_active(username,client_socket):
+    if not check_valid_credentials(username, password):
+        if not is_user_active(username):
             if not is_session_in_use(client_socket):
-                if not is_address_in_use(address,client_socket):
+                if not is_address_in_use(address):
                     return username
 
     if access_denied(client_socket, address, username):
