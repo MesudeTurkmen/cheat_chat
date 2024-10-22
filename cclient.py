@@ -41,7 +41,9 @@ def start_client():
         message = input(f"{username}: ")
         if message.lower() == "exit":
             break
-        client_socket.send(message.encode('utf-8'))
+
+        final_message = f"{username}~{message}"
+        client_socket.send(final_message.encode('utf-8'))
 
     client_socket.close()
 

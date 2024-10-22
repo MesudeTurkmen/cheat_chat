@@ -23,12 +23,10 @@ def broadcast(message, sender_socket):
             if client != sender_socket:  # Mesajı gönderen istemciye tekrar gönderme
                 try:
                     client.send(message)
-                except (socket.error, BrokenPipeError, ConnectionResetError) as e:
-                    print(f"Hata: {e}, istemciye mesaj gönderilemiyor.")
-                    # Hata durumunda istemciyi listeden çıkarmayı düşünebilirsin
-                    clients.remove(client)
-
-
+                except:
+                    print("unknown error")
+                    pass
+"""
 # İstemciden gelen mesajları işleyen fonksiyon
 def handle_client(client_socket):
     while True:
@@ -46,6 +44,24 @@ def handle_client(client_socket):
         except:
             print("Unexpected error")
             pass
+"""
+
+def listen_for_messages(client_socket):
+    while True:
+        message = client_socket.recv(2048).decode('utf-8')
+        if message != '':
+            username = message.split('~')[0]
+            msg = message.split('~')[1]
+
+            final_message = f"{username}~:{msg}"
+
+            print(final_message)
+            broadcast(final_message)
+            #CHAT_HISTORY.append(final_msg)
+        else:
+            print(f"The message sent from client {username} is empty")
+
+
 
 # Sunucuyu başlatma fonksiyonu
 def start_server():
@@ -63,8 +79,21 @@ def start_server():
             clients.append(client_socket)
 
         # Her istemci için yeni bir thread başlat
-        client_thread = threading.Thread(target=handle_client, args=(client_socket,))
+        client_thread = threading.Thread(target=listen_for_messages, args=(client_socket,))
         client_thread.start()
 
 if __name__ == "__main__":
     start_server()
+
+
+
+def broadcast(message, sender_socket):
+    with clients_lock:
+        for client in clients:
+            if client != sender_socket:  # Mesajı gönderen istemciye tekrar gönderme
+                try:
+                    client.send(message)
+                except (socket.error, BrokenPipeError, ConnectionResetError) as e:
+                    print(f"Hata: {e}, istemciye mesaj gönderilemiyor.")
+                    # Hata durumunda istemciyi listeden çıkarmayı düşünebilirsin
+                    clients.remove(client)
