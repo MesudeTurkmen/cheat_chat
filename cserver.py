@@ -24,8 +24,8 @@ def broadcast(message, sender_socket):
                 try:
                     client.send(message)
                 except:
-                    client.close()
-                    clients.remove(client)
+                    print("unknown error")
+                    pass
 
 # İstemciden gelen mesajları işleyen fonksiyon
 def handle_client(client_socket):
@@ -42,10 +42,8 @@ def handle_client(client_socket):
                 print(final_message)
                 broadcast(message, client_socket)  # Mesajı diğer istemcilere yay
         except:
-            with clients_lock:
-                clients.remove(client_socket)
-            client_socket.close()
-            break
+            print("Unexpected error")
+            pass
 
 # Sunucuyu başlatma fonksiyonu
 def start_server():
