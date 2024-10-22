@@ -50,9 +50,8 @@ def listen_for_messages(client_socket):
     while True:
         message = client_socket.recv(2048).decode('utf-8')
         if message != '':
-            message_decoded = message.decode('utf-8')
-            username = message_decoded.split('~')[0]
-            msg = message_decoded.split('~')[1]
+            username = message.split('~')[0]
+            msg = message.split('~')[1]
 
             final_message = f"{username}~:{msg}"
 
@@ -85,3 +84,16 @@ def start_server():
 
 if __name__ == "__main__":
     start_server()
+
+
+
+def broadcast(message, sender_socket):
+    with clients_lock:
+        for client in clients:
+            if client != sender_socket:  # Mesajı gönderen istemciye tekrar gönderme
+                try:
+                    client.send(message)
+                except (socket.error, BrokenPipeError, ConnectionResetError) as e:
+                    print(f"Hata: {e}, istemciye mesaj gönderilemiyor.")
+                    # Hata durumunda istemciyi listeden çıkarmayı düşünebilirsin
+                    clients.remove(client)
