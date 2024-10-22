@@ -13,11 +13,10 @@ def clear():
 def receive_messages(client_socket):
     while True:
         try:
-            message = client_socket.recv(1024)
+            message = client_socket.recv(1024).decode('utf-8')
             if message:
-                message_decoded = message.decode('utf-8')
-                sender_name = message_decoded.split('~')[0]
-                msg = message_decoded.split('~')[1]
+                sender_name = message.split('~')[0]
+                msg = message.split('~')[1]
                 final_message = f"{sender_name}~:{msg}"
 
                 print(final_message)
