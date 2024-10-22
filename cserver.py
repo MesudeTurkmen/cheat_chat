@@ -22,7 +22,7 @@ def broadcast(message, sender_socket):
         for client in clients:
             if client != sender_socket:  # Mesajı gönderen istemciye tekrar gönderme
                 try:
-                    client.send(message)
+                    client.sendall(message.encode('utf-8'))
                 except:
                     print("unknown error")
                     pass
