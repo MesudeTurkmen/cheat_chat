@@ -8,7 +8,18 @@ PORT = 8080                 # Kullanacağınız port
 LIMIT = 12                  #Temp just for now
 FORMAT = "utf-8"            #Encryption format
 DISCONNECT_MESSAGE = '!DISCONNECT'  
-valid_credentials = ''
+valid_credentials = {
+    "godfry": "abonque",
+    "darthmint": "mesudemesude",
+    "bozk*rt": "AllahuEkber",
+    "lalFreud": "hilalEnBuyuktur",
+    "slave": "AFtavlash",
+    "zerenk": "paytakSiziPataklar",
+    "kerman": "keremKerman",
+    "ece": "ececece",
+    "ahsen": "ahsenahsen",
+    "noor": "indianChad"
+}
 
 #Storing Sessions And Messages
 ACTIVE_SESSIONS = []                           #Stores active client_socket objects
