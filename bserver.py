@@ -1,6 +1,32 @@
 import socket
 import threading
 
+from db_models import session
+from db_models.user import User
+from sqlalchemy import create_engine
+from db_models.base import Base  # db_models içindeki Base sınıfı
+
+# Veritabanı bağlantısı (örneğin SQLite kullanarak)
+engine = create_engine('sqlite:///db.sqlite3', echo=True)
+
+# Veritabanındaki tabloları oluştur
+Base.metadata.create_all(engine)
+
+print("Veritabanı başarıyla oluşturuldu!")
+
+
+# Yeni bir kullanıcı oluşturma
+new_user = User(nickname="darthmint", password="mint")
+new_user = User(nickname="godfry", password="abonque")
+
+# Kullanıcıyı veritabanına ekleme
+session.add(new_user)
+session.commit()  # Veritabanına kaydet
+
+print("Yeni kullanıcı başarıyla eklendi!")
+
+
+
 # Bağlı olan istemciler için bir liste
 clients = []
 clients_lock = threading.Lock()

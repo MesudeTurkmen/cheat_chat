@@ -3,7 +3,7 @@ import threading
 import os
 
 # Socket sunucusu ayarları
-SERVER = '0.0.0.0'            # Tüm IP'lerden gelen bağlantılara izin verir
+SERVER = '0.0.0.0'          # Tüm IP'lerden gelen bağlantılara izin verir
 PORT = 8080                 # Kullanacağınız port
 LIMIT = 12                  #Temp just for now
 FORMAT = "utf-8"            #Encryption format
