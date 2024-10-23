@@ -14,16 +14,37 @@ Base.metadata.create_all(engine)
 
 print("Veritabanı başarıyla oluşturuldu!")
 
+d = open(file = 'predefined_credentials_nick.txt',mode = 'r')
+
+f=[]
+for i in d:
+    f.append(i)
+
+f = f[0].split(',')
+
+
+g = open(file = 'predefined_credentials_pass.txt',mode = 'r')
+
+e=[]
+for i in g:
+    e.append(i)
+
+e = e[0].split(',')
+
+
 
 # Yeni bir kullanıcı oluşturma
+
 new_user = User(nickname="darthmint", password="mint")
-new_user = User(nickname="godfry", password="abonque")
 
 # Kullanıcıyı veritabanına ekleme
-session.add(new_user)
+for i in range(len(f)):
+    new_user = User(nickname=f[i], password=e[i])
+    session.add(new_user)
+    print("Yeni kullanıcı başarıyla eklendi!", f[i], e[i])
 session.commit()  # Veritabanına kaydet
 
-print("Yeni kullanıcı başarıyla eklendi!")
+
 
 
 
