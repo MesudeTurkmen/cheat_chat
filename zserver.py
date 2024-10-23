@@ -85,15 +85,3 @@ def start_server():
 if __name__ == "__main__":
     start_server()
 
-
-
-def broadcast(message, sender_socket):
-    with clients_lock:
-        for client in clients:
-            if client != sender_socket:  # Mesajı gönderen istemciye tekrar gönderme
-                try:
-                    client.send(message)
-                except (socket.error, BrokenPipeError, ConnectionResetError) as e:
-                    print(f"Hata: {e}, istemciye mesaj gönderilemiyor.")
-                    # Hata durumunda istemciyi listeden çıkarmayı düşünebilirsin
-                    clients.remove(client)
