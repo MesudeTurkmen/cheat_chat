@@ -21,7 +21,11 @@ class Server:
         self.clients.append(writer)
 
        
-        nickname = User.nickname
+        writer.write(b"Enter your nickname: ")
+        await writer.drain()
+
+        # Nickname'i okuma
+        nickname = (await reader.read(1024)).decode().strip()
         print(f"{nickname} has joined the chat.")
 
         try:

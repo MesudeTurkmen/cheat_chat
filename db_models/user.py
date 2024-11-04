@@ -10,3 +10,9 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(name='{self.nickname}', password='{self.password}')>"
+
+class Role():
+    __tablename__= 'roles'
+
+    role = Column(Integer, nullable=False)
+    

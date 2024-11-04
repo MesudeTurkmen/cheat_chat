@@ -34,7 +34,7 @@ class Client():
 
     async def receive_message(self):
         while True:
-            data = await self.reader.read(100)  # Sunucudan gelen mesajı oku
+            data = await self.reader.read(1024)  # Sunucudan gelen mesajı oku
             if data:
                 print(f"Server: {data.decode()}")
             else:
