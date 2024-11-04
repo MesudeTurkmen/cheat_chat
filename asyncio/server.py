@@ -54,15 +54,6 @@ class Server():
             await self.server.wait_closed()
             print('server determinated')
     
-    def authenticate_user(nickname, password):
-    session = Session()
-    user = session.query(User).filter_by(nickname=nickname).first()
-    if user and verify_password(password, user.password):
-        print("Authentication successful.")
-        return True
-    else:
-        print("Invalid nickname or password.")
-        return False
 
 
 if __name__ == '__main__':
