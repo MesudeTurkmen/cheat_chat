@@ -1,5 +1,6 @@
 import asyncio
 from db import register_user, authenticate_user
+from server import nickname
 
 class Client:
     def __init__(self, host='63.176.122.3', port=6666):
@@ -15,10 +16,7 @@ class Client:
                 self.port
             )
             print("Connected to the server.")
-            await asyncio.gather(
-                self.send_message(),
-                self.receive_message()
-            )
+            await self.receive_message()  # İlk olarak sunucudan gelen mesajı dinle
         except Exception as e:
             print(f"Connection error: {e}")
 
@@ -36,6 +34,11 @@ class Client:
                 await self.writer.drain()  # Gönderme işleminin tamamlanmasını bekle
 
     async def receive_message(self):
+        # İlk olarak nickname almak için sunucudan gelen mesajı dinleyin
+        nickname = input(await self.reader.read(1024))  # Sunucudan gelen nickname isteğini oku
+        self.writer.write(nickname.encode())  # Kullanıcıdan alınan nickname'i sunucuya gönder
+        await self.writer.drain()  # Gönderme işleminin tamamlanmasını bekle
+        
         while True:
             try:
                 data = await self.reader.read(1024)  # Sunucudan gelen mesajı oku
@@ -53,7 +56,6 @@ class Client:
 if __name__ == '__main__':
     myClient = Client()
     action = input("Do you want to register (r) or login (l)? ")
-    nickname = input("Enter your nickname: ")
     password = input("Enter your password: ")
 
     if action == 'r':
@@ -66,6 +68,7 @@ if __name__ == '__main__':
             print("Connecting to server...")
             try:
                 asyncio.run(myClient.start_client())
+                asyncio.run(myClient.send_message())  # Gönderim görevini başlat
             except KeyboardInterrupt:
                 print("Client interrupted by user")
         else:

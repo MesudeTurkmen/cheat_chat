@@ -6,13 +6,12 @@ class Server:
         self.host = host
         self.port = port
         self.server = None
-        self.clients = []  # Bağlı istemciler için liste
-        self.nicknames = {}  # Her istemci için takma adları saklamak için
-
+        self.clients = []
+  
     async def start_server(self):
         self.server = await asyncio.start_server(self.handle_client, self.host, self.port)
         print('Server activated...')
-    
+
         async with self.server:
             await self.server.serve_forever()
 
@@ -21,12 +20,12 @@ class Server:
         print(f"Connection established with {addr}")
         self.clients.append(writer)
 
-        # İstemciden takma adını iste
+        # Nickname isteme
         writer.write(b"Enter your nickname: ")
         await writer.drain()
-        
+
+        # Nickname'i okuma
         nickname = (await reader.read(1024)).decode().strip()
-        self.nicknames[writer] = nickname  # Takma adı sakla
         print(f"{nickname} has joined the chat.")
 
         try:
@@ -52,7 +51,6 @@ class Server:
             writer.close()
             await writer.wait_closed()
             self.clients.remove(writer)
-            del self.nicknames[writer]  # Takma adı listesinden kaldır
 
     async def send_to_client(self, client, data):
         client.write(data)
