@@ -5,17 +5,17 @@ import bcrypt
 
 Base = declarative_base()
 
-engine = create_engine('sqlite:///chat_users.db')
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-
+# Kullanıcı modeli
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     nickname = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
 
-
+# Veritabanı bağlantısı
+engine = create_engine('sqlite:///chat_users.db')
+Base.metadata.create_all(engine)  # Bu satır tabloyu oluşturur
+Session = sessionmaker(bind=engine)
 
 def hash_password(password):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

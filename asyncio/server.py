@@ -1,19 +1,15 @@
 import asyncio
 
-class Server():
-    def __init__(self,host = '0.0.0.0', port = 6666):
+class Server:
+    def __init__(self, host='0.0.0.0', port=6666):
         self.host = host
         self.port = port
         self.server = None
         self.clients = []
   
     async def start_server(self):
-        self.server = await asyncio.start_server(
-            self.handle_client,
-            self.host,
-            self.port
-        )
-        print('server activated...')
+        self.server = await asyncio.start_server(self.handle_client, self.host, self.port)
+        print('Server activated...')
     
         async with self.server:
             await self.server.serve_forever()
@@ -26,18 +22,17 @@ class Server():
         try:
             while True:
                 data = await reader.read(100)
-                message = data.decode()
-
+                
                 if not data:
                     print(f"Connection closed by {addr}")
                     break
 
+                message = data.decode()
                 print(f"{addr}: {message}")
 
-                for client in self.clients:
-                    if client != writer:
-                        client.write(data)
-                        await client.drain()
+                # Broadcast message using gather for concurrent sending
+                await asyncio.gather(*(self.send_to_client(client, data) for client in self.clients if client != writer))
+
         except Exception as e:
             print(f"Error with client {addr}: {e}")
         
@@ -45,16 +40,11 @@ class Server():
             print(f"Closing connection with {addr}")
             writer.close()
             await writer.wait_closed()
-            self.client.remove(writer)
+            self.clients.remove(writer)
 
-
-    async def stop_server(self,server):
-        if self.server:
-            self.server.close()
-            await self.server.wait_closed()
-            print('server determinated')
-    
-
+    async def send_to_client(self, client, data):
+        client.write(data)
+        await client.drain()
 
 if __name__ == '__main__':
     myServer = Server()
