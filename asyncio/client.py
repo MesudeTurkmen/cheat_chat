@@ -2,33 +2,22 @@ import asyncio
 from db import register_user, authenticate_user
 
 class Client:
-    def __init__(self, host='63.176.122.3', port=6666):
+    def __init__(self, nickname, host='63.176.122.3', port=6666):
         self.host = host
         self.port = port
         self.reader = None
         self.writer = None
+        self.nickname = nickname
 
     async def start_client(self):
-        self.reader, self.writer = await asyncio.open_connection(
-            self.host,
-            self.port
-        )
+        self.reader, self.writer = await asyncio.open_connection(self.host, self.port)
         print("Connected to the server.")
 
-        # Sunucudan gelen nickname isteğini al ve göster
-        server_message = await self.reader.read(1024)
-        print(server_message.decode())
-
-        # Nickname gönder
-        nickname = input("Enter your nickname: ")
-        self.writer.write(nickname.encode())
+        # İlk olarak sunucuya nickname'i gönderiyoruz
+        self.writer.write(self.nickname.encode())
         await self.writer.drain()
 
-        # Görevleri başlat
-        await asyncio.gather(
-            self.send_message(),
-            self.receive_message()
-        )
+        await asyncio.gather(self.send_message(), self.receive_message())
 
     async def send_message(self):
         while True:
@@ -45,7 +34,7 @@ class Client:
         while True:
             data = await self.reader.read(1024)
             if data:
-                print(data.decode())
+                print(f"Server: {data.decode()}")
             else:
                 print("Server closed the connection.")
                 self.writer.close()
@@ -53,7 +42,6 @@ class Client:
                 break
 
 if __name__ == '__main__':
-    myClient = Client()
     action = input("Do you want to register (r) or login (l)? ")
     nickname = input("Enter your nickname: ")
     password = input("Enter your password: ")
@@ -66,8 +54,9 @@ if __name__ == '__main__':
     elif action == 'l':
         if authenticate_user(nickname, password):
             print("Connecting to server...")
+            client = Client(nickname)
             try:
-                asyncio.run(myClient.start_client())
+                asyncio.run(client.start_client())
             except KeyboardInterrupt:
                 print("Client interrupted by user")
         else:
