@@ -21,8 +21,9 @@ class Client:
 
     async def send_message(self):
         while True:
-            message = input("You: ")
-            self.writer.write(message.encode())
+            message = input(f"{self.nickname}: ")
+            full_message = f"{self.nickname}: {message}"
+            self.writer.write(full_message.encode())
             await self.writer.drain()
             if message.lower() == 'quit':
                 print("Exiting chat.")
@@ -34,7 +35,11 @@ class Client:
         while True:
             data = await self.reader.read(1024)
             if data:
-                print(f"Server: {data.decode()}")
+                incoming_message = data.decode()
+                
+                display_message = incoming_message
+                    
+                print(display_message)
             else:
                 print("Server closed the connection.")
                 self.writer.close()
