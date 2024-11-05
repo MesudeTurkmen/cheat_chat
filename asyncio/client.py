@@ -7,70 +7,67 @@ class Client:
         self.port = port
         self.reader = None
         self.writer = None
-        self.nickname = None
-        self.password = None
 
     async def start_client(self):
-        try:
-            self.reader, self.writer = await asyncio.open_connection(
-                self.host,
-                self.port
-            )
-            print("Connected to the server.")
-            await self.receive_message()  # İlk olarak sunucudan gelen mesajı dinle
-        except Exception as e:
-            print(f"Connection error: {e}")
+        self.reader, self.writer = await asyncio.open_connection(
+            self.host,
+            self.port
+        )
+        print("Connected to the server.")
+
+        # Sunucudan gelen nickname isteğini al ve göster
+        server_message = await self.reader.read(1024)
+        print(server_message.decode())
+
+        # Nickname gönder
+        nickname = input("Enter your nickname: ")
+        self.writer.write(nickname.encode())
+        await self.writer.drain()
+
+        # Görevleri başlat
+        await asyncio.gather(
+            self.send_message(),
+            self.receive_message()
+        )
 
     async def send_message(self):
         while True:
-            message = input(f"{self.nickname}: ")
+            message = input("You: ")
+            self.writer.write(message.encode())
+            await self.writer.drain()
             if message.lower() == 'quit':
                 print("Exiting chat.")
                 self.writer.close()
                 await self.writer.wait_closed()
                 break
-            
-            if message:  # Boş mesaj gönderilmemesi için kontrol
-                self.writer.write(message.encode())
-                await self.writer.drain()  # Gönderme işleminin tamamlanmasını bekle
 
     async def receive_message(self):
-        # İlk olarak nickname almak için sunucudan gelen mesajı dinleyin
-        nickname = input(await self.reader.read(1024))  # Sunucudan gelen nickname isteğini oku
-        self.writer.write(nickname.encode())  # Kullanıcıdan alınan nickname'i sunucuya gönder
-        await self.writer.drain()  # Gönderme işleminin tamamlanmasını bekle
-        
         while True:
-            try:
-                data = await self.reader.read(1024)  # Sunucudan gelen mesajı oku
-                if data:
-                    print(f"Server: {data.decode()}")
-                else:
-                    print("Server closed the connection.")
-                    self.writer.close()
-                    await self.writer.wait_closed()
-                    break
-            except Exception as e:
-                print(f"Error receiving message: {e}")
+            data = await self.reader.read(1024)
+            if data:
+                print(data.decode())
+            else:
+                print("Server closed the connection.")
+                self.writer.close()
+                await self.writer.wait_closed()
                 break
 
 if __name__ == '__main__':
     myClient = Client()
     action = input("Do you want to register (r) or login (l)? ")
-    myClient.nickname = input("Enter your nickname: ")
-    myClient.password = input("Enter your password: ")
+    nickname = input("Enter your nickname: ")
+    password = input("Enter your password: ")
     
     if action == 'r':
-        if register_user(myClient.nickname, myClient.password):
+        if register_user(nickname, password):
             print("You can now login.")
         else:
             print("Registration failed.")
     elif action == 'l':
-        if authenticate_user(myClient.nickname, myClient.password):
+        if authenticate_user(nickname, password):
             print("Connecting to server...")
             try:
                 asyncio.run(myClient.start_client())
-                asyncio.run(myClient.send_message())
             except KeyboardInterrupt:
                 print("Client interrupted by user")
         else:
