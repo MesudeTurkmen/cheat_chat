@@ -1,13 +1,12 @@
 import asyncio
-from db import User
 
 class Server:
     def __init__(self, host='0.0.0.0', port=6666):
         self.host = host
         self.port = port
         self.server = None
-        self.clients = {}  # Client ile nickname eşleşmesi için dict kullanıyoruz
-  
+        self.clients = {}  # Dictionary to hold nickname and writer
+
     async def start_server(self):
         self.server = await asyncio.start_server(self.handle_client, self.host, self.port)
         print('Server activated...')
@@ -18,18 +17,22 @@ class Server:
     async def handle_client(self, reader, writer):
         addr = writer.get_extra_info('peername')
         print(f"Connection established with {addr}")
-        self.clients.append(writer)
+        
+        # Prompt user for nickname
+        writer.write(b"Enter your nickname: ")
+        await writer.drain()
+
+        # Read nickname
+        nickname = (await reader.read(100)).decode().strip()
+        print(f"{nickname} has joined the chat.")
+        
+        # Store the client with their nickname
+        self.clients[nickname] = writer
 
         try:
-            writer.write(b"Enter your nickname: ")
-            await writer.drain()
-
-            # Nickname'i okuma
-            nickname = (await reader.read(1024)).decode().strip()
-            print(f"{nickname} has joined the chat.")
-
             while True:
                 data = await reader.read(100)
+
                 if not data:
                     print(f"Connection closed by {addr}")
                     break
@@ -37,9 +40,9 @@ class Server:
                 message = data.decode()
                 print(f"{nickname}: {message}")
 
-                # Mesajı diğer kullanıcılara yayma
+                # Broadcast message to other clients
                 broadcast_message = f"{nickname}: {message}".encode()
-                await asyncio.gather(*(self.send_to_client(client, broadcast_message) for client in self.clients if client != writer))
+                await asyncio.gather(*(self.send_to_client(client, broadcast_message) for nick, client in self.clients.items() if nick != nickname))
 
         except Exception as e:
             print(f"Error with client {addr}: {e}")
@@ -48,9 +51,7 @@ class Server:
             print(f"Closing connection with {addr}")
             writer.close()
             await writer.wait_closed()
-            # Burada writer'ı clients listesinden çıkarıyoruz.
-            if writer in self.clients:
-                self.clients.remove(writer)
+            del self.clients[nickname]  # Remove client from the dictionary
 
     async def send_to_client(self, client, data):
         client.write(data)
@@ -61,4 +62,4 @@ if __name__ == '__main__':
     try:
         asyncio.run(myServer.start_server())
     except KeyboardInterrupt:
-        print("Server interrupted by user")  
+        print("Server interrupted by user")
