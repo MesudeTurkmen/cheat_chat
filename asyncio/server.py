@@ -21,7 +21,7 @@ class Server:
         self.clients.append(writer)
 
         # Nickname isteme
-        writer.write(b"Enter your nickname: ")
+        writer.write("Enter your nickname: ")
         await writer.drain()
 
         # Nickname'i okuma

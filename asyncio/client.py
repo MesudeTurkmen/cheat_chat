@@ -1,6 +1,5 @@
 import asyncio
 from db import register_user, authenticate_user
-from server import nickname
 
 class Client:
     def __init__(self, host='63.176.122.3', port=6666):
@@ -8,6 +7,8 @@ class Client:
         self.port = port
         self.reader = None
         self.writer = None
+        self.nickname = None
+        self.password = None
 
     async def start_client(self):
         try:
@@ -22,7 +23,7 @@ class Client:
 
     async def send_message(self):
         while True:
-            message = input("You: ")
+            message = input(f"{self.nickname}: ")
             if message.lower() == 'quit':
                 print("Exiting chat.")
                 self.writer.close()
@@ -56,19 +57,20 @@ class Client:
 if __name__ == '__main__':
     myClient = Client()
     action = input("Do you want to register (r) or login (l)? ")
-    password = input("Enter your password: ")
-
+    myClient.nickname = input("Enter your nickname: ")
+    myClient.password = input("Enter your password: ")
+    
     if action == 'r':
-        if register_user(nickname, password):
+        if register_user(myClient.nickname, myClient.password):
             print("You can now login.")
         else:
             print("Registration failed.")
     elif action == 'l':
-        if authenticate_user(nickname, password):
+        if authenticate_user(myClient.nickname, myClient.password):
             print("Connecting to server...")
             try:
                 asyncio.run(myClient.start_client())
-                asyncio.run(myClient.send_message())  # Gönderim görevini başlat
+                asyncio.run(myClient.send_message())
             except KeyboardInterrupt:
                 print("Client interrupted by user")
         else:
