@@ -31,12 +31,12 @@ class Server:
             while True:
                 data = await reader.read(100)
                 if not data:
-                print(f"Connection closed by {addr}")
-                break
-                
+                    print(f"Connection closed by {addr}")
+                    break
+
                 message = data.decode()
                 print(f"{nickname}: {message}")
-    
+
                 # Mesajı diğer kullanıcılara yayma
                 broadcast_message = f"{nickname}: {message}".encode()
                 await asyncio.gather(*(self.send_to_client(client, broadcast_message) for client in self.clients if client != writer))
@@ -50,8 +50,7 @@ class Server:
             await writer.wait_closed()
             # Burada writer'ı clients listesinden çıkarıyoruz.
             if writer in self.clients:
-            self.clients.remove(writer)
-
+                self.clients.remove(writer)
 
     async def send_to_client(self, client, data):
         client.write(data)
