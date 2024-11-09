@@ -1,8 +1,8 @@
 import asyncio
-from db import register_user, authenticate_user
+from asyncio.dbwithroles import register_user, authenticate_user
 
 class Client:
-    def __init__(self, nickname, host='63.176.122.3', port=6666):
+    def __init__(self, nickname, host='192.168.43.251', port=6666):
         self.host = host
         self.port = port
         self.reader = None
@@ -14,7 +14,7 @@ class Client:
         print("Connected to the server.")
 
         # İlk olarak sunucuya nickname'i gönderiyoruz
-        self.writer.write(self.nickname.encode())
+        self.writer.write(self.nickname.encode('utf-8'))
         await self.writer.drain()
 
         await asyncio.gather(self.send_message(), self.receive_message())
@@ -23,7 +23,7 @@ class Client:
         while True:
             message = input(f"{self.nickname}: ")
             full_message = f"{self.nickname}: {message}"
-            self.writer.write(full_message.encode())
+            self.writer.write(full_message.encode('utf-8'))
             await self.writer.drain()
             if message.lower() == 'quit':
                 print("Exiting chat.")
@@ -35,7 +35,7 @@ class Client:
         while True:
             data = await self.reader.read(1024)
             if data:
-                incoming_message = data.decode()
+                incoming_message = data.decode('utf-8')
                 
                 display_message = incoming_message
                     
