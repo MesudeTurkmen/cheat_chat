@@ -1,5 +1,5 @@
 import asyncio
-from asyncio.dbwithroles import register_user, authenticate_user
+from dbwithroles import register_user, authenticate_user
 
 class Client:
     def __init__(self, nickname, host='192.168.43.251', port=6666):

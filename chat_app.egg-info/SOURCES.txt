@@ -1,0 +1,12 @@
+README.md
+setup.py
+chat_app.egg-info/PKG-INFO
+chat_app.egg-info/SOURCES.txt
+chat_app.egg-info/dependency_links.txt
+chat_app.egg-info/requires.txt
+chat_app.egg-info/top_level.txt
+cheat_chat/__init__.py
+cheat_chat/client.py
+cheat_chat/commands.py
+cheat_chat/database.py
+cheat_chat/server.py
