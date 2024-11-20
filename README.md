@@ -5,7 +5,4 @@ A Python-based chat application using Redis and MySQL.
 working on that
 
 ## Authors
-Abdullah Zainel\n
-Kerem Durgut\n
-Zeren Kavaz \n
-Mesude Türkmen\n
+Abdullah Zainel & Kerem Durgut & Zeren Kavaz & Mesude Türkmen
