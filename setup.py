@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="chat_app",
-    version="0.1.0",
-    author="Abdullah Zainel & Kerem Durgut & Zeren Kavaz & Mesude Türkmen",
+    name="cheat_chat",
+    version="0.2.0",
+    author="Abdullah Zeynel & Zeren Kavaz & Kerem Durgut & Mesude Türkmen",
     author_email="your_email@example.com",
     description="A server-client chat application with Redis and MySQL support",
     long_description=open("README.md").read(),
