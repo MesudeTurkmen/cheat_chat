@@ -9,18 +9,18 @@ def clear():
         os.system('cls')
     else: #For lin and mac
         os.system('clear')
-
-
-# Sunucudan gelen mesajları dinleyen fonksiyon
-def receive_messages(client_socket):
-    while True:
-        try:
-            message = client_socket.recv(1024).decode('utf-8')
-            if message:
-                sender_name = message.split('~')[0]
-                msg = message.split('~')[1]
-                final_message = f"{sender_name}~:{msg}"
-
+                                                                                                                        
+                                                                       ###     ###        ###############      ##   ##
+# Sunucudan gelen mesajları dinleyen fonksiyon                         ###   ###          ###                  ##    ##
+def receive_messages(client_socket):                                   ### ###            ###                  ##   ##
+    while True:                                                        ######             ###                  ##  ##
+        try:                                                           ###                ###                  ## ##
+            message = client_socket.recv(1024).decode('utf-8')         ######             ###############      ####
+            if message:                                                ### ###            ###                  ##
+                sender_name = message.split('~')[0]                    ###  ###           ###                  ##
+                msg = message.split('~')[1]                            ###    ###         ###                  ##
+                final_message = f"{sender_name}~:{msg}"                ###     ###        ###                  ##
+                                                                       ###       ###      ###############      ##
                 print('\n' + final_message)
         except:
             print("Bağlantı kesildi.")
